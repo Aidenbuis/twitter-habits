@@ -75,8 +75,6 @@ const changeUsername = async () => {
   updateProfile({ name: newUsername, location: newLocation });
 };
 
-// replace the value below with the Telegram token you receive from @BotFather
-
 const initTelegramBot = (options: TelegramBot.ConstructorOptions = {}) => {
   const token = process.env.TELEGRAM_TOKEN;
   if (!token) return;
@@ -84,24 +82,56 @@ const initTelegramBot = (options: TelegramBot.ConstructorOptions = {}) => {
   return bot;
 };
 
-const sendMessage = () => {
-  const bot = initTelegramBot({ polling: true });
+const sendHabitCheckTelegram = () => {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!chatId || !bot) return;
 
-  bot.onText(/\/done/, (msg) => {
-    const options: TelegramBot.SendMessageOptions = {
-      reply_to_message_id: msg.message_id,
-      reply_markup: {
-        keyboard: [[{ text: "🟢" }], [{ text: "🔴" }]],
-        one_time_keyboard: true,
-      },
-    };
+  bot.sendMessage(chatId, "Did you meditate today?", {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: "🟢", callback_data: "true" },
+          { text: "🔴", callback_data: "false" },
+        ],
+      ],
+    },
+  });
 
-    bot.sendMessage(msg.chat.id, "Do you love me?", options);
+  bot.on("callback_query", (callbackQuery) => {
+    const { id, data, message } = callbackQuery;
+
+    if (!message) return;
+
+    const message_id = message.message_id;
+    const chat_id = message.chat.id;
+    const done = data === "true";
+    const responseMsg = done ? "🌞 Well done" : "🍃  Tomorrow is another day";
+    const responseEmoji = done ? "🌞" : "🍃";
+
+    // Response with an emoji
+    bot.answerCallbackQuery(id, { text: responseEmoji });
+
+    // Remove the inline keyboard
+    bot.editMessageReplyMarkup(
+      { inline_keyboard: [] },
+      { message_id, chat_id }
+    );
+
+    // Edit the message
+    bot.editMessageText(responseMsg, { message_id, chat_id });
+
+    // Change username
+    if (done) {
+      changeUsername();
+    }
   });
 };
 
-const job = new cron.CronJob("* * * * *", sendMessage, null, true, timezone);
+const bot = initTelegramBot({ polling: true });
 
-job.start();
+sendHabitCheckTelegram();
+
+// https://crontab.guru/
+// const job = new cron.CronJob("* * * * *", sendHabitCheckTelegram, null, true, timezone);
+
+// job.start();
