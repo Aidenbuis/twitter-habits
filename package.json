@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "start": "ts-node chatbot.ts",
+    "lint": "eslint . --ext .ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
+    "eslint": "^8.9.0",
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "@types/cron": "^1.7.3",
+    "@types/needle": "^2.5.3",
+    "@types/node-telegram-bot-api": "^0.56.0",
+    "@types/twitter": "^1.7.1",
+    "cron": "^1.8.2",
+    "dotenv": "^16.0.0",
+    "needle": "^3.0.0",
+    "node-telegram-bot-api": "^0.56.0",
+    "request": "^2.88.2",
+    "twitter": "^1.7.1"
+  }
+}
