@@ -27,7 +27,7 @@ const generateNewLocation = (location: string, done: boolean) => {
 
 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-const getCurrentCredentials = () => {
+const getUserProfileInfo = () => {
   return new Promise<Twitter.ResponseData>((resolve, reject) => {
     client.get(
       "https://api.twitter.com/1.1/account/verify_credentials.json",
@@ -64,13 +64,19 @@ const updateProfile = (profile: updateProfileProps) => {
 };
 
 const changeUsername = async () => {
-  const credentials = await getCurrentCredentials();
-  const { name, location } = credentials;
+  // Get the current username and location
+  const { name, location } = await getUserProfileInfo();
   const endOfWeekCharPos = name.indexOf("/7");
-  const currentNum = parseInt(
+
+  // Extract the current habit count
+  const habitCount = parseInt(
     name.substring(endOfWeekCharPos - 1, endOfWeekCharPos)
   );
-  const newUsername = generateNewUsername(currentNum, true);
+
+  if (isNaN(habitCount)) return;
+
+  // Generate the new username and location strings by increasing the count
+  const newUsername = generateNewUsername(habitCount, true);
   const newLocation = generateNewLocation(location, true);
   updateProfile({ name: newUsername, location: newLocation });
 };
@@ -82,7 +88,7 @@ const initTelegramBot = (options: TelegramBot.ConstructorOptions = {}) => {
   return bot;
 };
 
-const sendHabitCheckTelegram = () => {
+const initDailyCheck = () => {
   const chatId = process.env.TELEGRAM_CHAT_ID;
   if (!chatId || !bot) return;
 
@@ -90,8 +96,8 @@ const sendHabitCheckTelegram = () => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "🟢", callback_data: "true" },
-          { text: "🔴", callback_data: "false" },
+          { text: "Yes", callback_data: "true" },
+          { text: "No", callback_data: "false" },
         ],
       ],
     },
@@ -129,9 +135,14 @@ const sendHabitCheckTelegram = () => {
 
 const bot = initTelegramBot({ polling: true });
 
-sendHabitCheckTelegram();
-
 // https://crontab.guru/
-// const job = new cron.CronJob("* * * * *", sendHabitCheckTelegram, null, true, timezone);
+// Run every day at 12:00 AM
+const job = new cron.CronJob(
+  "0 12 * * *",
+  initDailyCheck,
+  null,
+  true,
+  timezone
+);
 
-// job.start();
+job.start();
