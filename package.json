@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "ts-node chatbot.ts",
+    "start": "node chatbot.js",
     "lint": "eslint . --ext .ts"
   },
   "devDependencies": {
