@@ -121,6 +121,6 @@ const bot = initTelegramBot({ polling: true })
 
 // https://crontab.guru/
 // Run every day at 12:00 AM
-const job = new cron.CronJob('0 12 * * *', initDailyCheck, null, true, timezone)
+const job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone)
 
 job.start()
