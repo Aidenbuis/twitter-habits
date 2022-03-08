@@ -50,8 +50,8 @@ exports.__esModule = true;
 var TelegramBot = require("node-telegram-bot-api");
 var dotenv = require("dotenv");
 var Twitter = require("twitter");
+var cron = require("cron");
 dotenv.config();
-console.log('TEST123');
 var client = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY || '',
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET || '',
@@ -146,5 +146,6 @@ var initDailyCheck = function () {
     });
 };
 var bot = initTelegramBot({ polling: true });
-initDailyCheck();
+var job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone);
+job.start();
 //# sourceMappingURL=chatbot.js.map

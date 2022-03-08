@@ -5,8 +5,6 @@ import cron = require('cron')
 
 dotenv.config()
 
-console.log('TEST123')
-
 const client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY || '',
   consumer_secret: process.env.TWITTER_CONSUMER_SECRET || '',
@@ -121,9 +119,7 @@ const initDailyCheck = () => {
 
 const bot = initTelegramBot({ polling: true })
 
-initDailyCheck()
-
-// // https://crontab.guru/
-// // Run every day at 12:00 AM
-// const job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone)
-// job.start()
+// https://crontab.guru/
+// Run every day at 12:00 AM
+const job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone)
+job.start()
