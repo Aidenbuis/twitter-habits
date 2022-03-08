@@ -119,8 +119,9 @@ const initDailyCheck = () => {
 
 const bot = initTelegramBot({ polling: true })
 
-// https://crontab.guru/
-// Run every day at 12:00 AM
-const job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone)
+initDailyCheck()
 
-job.start()
+// // https://crontab.guru/
+// // Run every day at 12:00 AM
+// const job = new cron.CronJob('* * * * *', initDailyCheck, null, true, timezone)
+// job.start()
