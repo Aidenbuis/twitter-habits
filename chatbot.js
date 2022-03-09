@@ -147,6 +147,6 @@ var initDailyCheck = function () {
 };
 var bot = initTelegramBot({ polling: true });
 console.log('🧙‍♂️ Bot started at ', new Date().toLocaleString('en-US', { timeZone: timezone }));
-var job = new cron.CronJob('* 12 * * *', initDailyCheck);
+var job = new cron.CronJob('0 12 * * *', initDailyCheck);
 job.start();
 //# sourceMappingURL=chatbot.js.map
