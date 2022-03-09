@@ -124,5 +124,6 @@ console.log('🧙‍♂️ Bot started at ', new Date().toLocaleString('en-US', 
 // https://crontab.guru/
 // (Should) Run every day at 12:00 AM
 // const job = new cron.CronJob('0 12 * * *', initDailyCheck)
+// tests....
 const job = new cron.CronJob('* * * * *', initDailyCheck)
 job.start()
